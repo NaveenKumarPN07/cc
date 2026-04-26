@@ -1,0 +1,40 @@
+version: '3.9'
+
+# ─── Production overrides ─────────────────────────────────────────────────────
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+services:
+
+  mongo:
+    ports: []              # Don't expose Mongo port publicly in production
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  backend:
+    environment:
+      NODE_ENV: production
+    deploy:
+      resources:
+        limits:
+          cpus: '0.75'
+          memory: 512M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  frontend:
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 128M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
