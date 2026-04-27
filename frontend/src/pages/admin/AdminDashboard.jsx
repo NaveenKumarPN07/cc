@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { Package, ShoppingCart, Users, DollarSign, TrendingUp, Clock } from 'lucide-react';
+import {Brain, Package, ShoppingCart, Users, DollarSign, TrendingUp, Clock } from 'lucide-react';
 import { orderAPI, productAPI, userAPI } from '../../services/api';
 import { Spinner, OrderStatusBadge } from '../../components/common';
 
@@ -155,6 +155,7 @@ export default function AdminDashboard() {
           { to: '/admin/products/new', label: 'Add New Product', icon: Package, color: 'text-purple-600 bg-purple-50' },
           { to: '/admin/orders', label: 'Manage Orders', icon: ShoppingCart, color: 'text-brand-600 bg-brand-50' },
           { to: '/admin/users', label: 'Manage Users', icon: Users, color: 'text-indigo-600 bg-indigo-50' },
+          { to: '/admin/ml', icon: Brain, label: 'ML & Analytics' }
         ].map(({ to, label, icon: Icon, color }) => (
           <Link key={to} to={to}
             className="card p-5 flex items-center gap-4 hover:shadow-card-hover transition-shadow">

@@ -26,6 +26,7 @@ import cartRoutes from './routes/cartRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
+import recommendRoutes from './routes/recommendRoutes.js';
 
 // Connect to MongoDB
 connectDB();
@@ -87,6 +88,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/recommendations', recommendRoutes);
 app.use('/api/upload', uploadRoutes);
 
 // Health check endpoint

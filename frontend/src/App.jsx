@@ -33,7 +33,7 @@ import AdminProducts from './pages/admin/AdminProducts';
 import AdminProductForm from './pages/admin/AdminProductForm';
 import AdminOrders from './pages/admin/AdminOrders';
 import AdminUsers from './pages/admin/AdminUsers';
-
+import AdminMLDashboard from './pages/admin/AdminMLDashboard';
 // Route guards
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated());
@@ -97,6 +97,7 @@ export default function App() {
           <Route path="products/:id/edit" element={<AdminProductForm />} />
           <Route path="orders" element={<AdminOrders />} />
           <Route path="users" element={<AdminUsers />} />
+          <Route path="ml" element={<AdminMLDashboard />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -4,7 +4,7 @@ import { ArrowRight, Truck, RotateCcw, Shield, Headphones } from 'lucide-react';
 import { productAPI } from '../services/api';
 import ProductCard from '../components/product/ProductCard';
 import { ProductCardSkeleton } from '../components/common';
-
+import RecommendedProducts from '../components/product/RecommendedProducts';
 const HERO_SLIDES = [
   {
     title: 'New Season Arrivals',
@@ -113,7 +113,7 @@ export default function HomePage() {
           ))}
         </div>
       </section>
-
+      <RecommendedProducts />
       {/* ─── Featured Products ─────────────────────────────────────────────── */}
       <section className="container-page py-8">
         <div className="flex items-center justify-between mb-6">

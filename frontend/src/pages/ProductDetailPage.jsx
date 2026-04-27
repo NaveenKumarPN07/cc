@@ -12,7 +12,7 @@ import { userAPI } from '../services/api';
 import ProductCard from '../components/product/ProductCard';
 import { Spinner, StarRating, ErrorMessage } from '../components/common';
 import toast from 'react-hot-toast';
-
+import SimilarProducts from '../components/product/SimilarProducts';
 export default function ProductDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -374,14 +374,7 @@ export default function ProductDetailPage() {
       </section>
 
       {/* ─── Related Products ──────────────────────────────────────────────── */}
-      {related?.length > 0 && (
-        <section className="mt-14">
-          <h2 className="section-title mb-6">You May Also Like</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            {related.slice(0, 8).map((p) => <ProductCard key={p._id} product={p} />)}
-          </div>
-        </section>
-      )}
+      <SimilarProducts productId={product._id} />
     </div>
   );
 }

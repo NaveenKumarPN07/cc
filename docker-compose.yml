@@ -1,14 +1,12 @@
 version: '3.9'
 
-# ─── AJIO Clone — Docker Compose ──────────────────────────────────────────────
-# Runs: MongoDB + Express Backend + React/Nginx Frontend
-# Usage:
-#   Development : docker-compose up --build
-#   Production  : docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+# ─── AJIO Clone + ML Service — Docker Compose ─────────────────────────────────
+# Adds ml_service container to your existing stack
+# Run: docker compose up --build -d
 
 services:
 
-  # ── MongoDB ──────────────────────────────────────────────────────────────────
+  # ── MongoDB (unchanged) ───────────────────────────────────────────────────────
   mongo:
     image: mongo:7.0
     container_name: ajio_mongo
@@ -21,7 +19,6 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
-      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     networks:
       - ajio_net
     healthcheck:
@@ -31,7 +28,37 @@ services:
       retries: 5
       start_period: 20s
 
-  # ── Backend (Node/Express) ───────────────────────────────────────────────────
+  # ── ML Microservice (NEW) ─────────────────────────────────────────────────────
+  ml_service:
+    build:
+      context: ./ml_service
+      dockerfile: Dockerfile
+    container_name: ajio_ml
+    restart: unless-stopped
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment:
+      MONGO_URI: mongodb://${MONGO_ROOT_USER:-admin}:${MONGO_ROOT_PASS:-secret}@mongo:27017/ajio_clone?authSource=admin
+      MONGO_DB: ajio_clone
+      ML_API_KEY: ${ML_API_KEY:-internal_ml_secret}
+      NODE_BACKEND_URL: http://backend:5000
+      MODEL_PATH: /app/saved_models/recommender.pkl
+    volumes:
+      - ml_models:/app/saved_models   # persist trained model across restarts
+    ports:
+      - "8000:8000"                   # expose for debugging; remove in production
+    networks:
+      - ajio_net
+    healthcheck:
+      test: ["CMD", "python", "-c",
+             "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # ── Backend (add ML_SERVICE_URL env var) ──────────────────────────────────────
   backend:
     build:
       context: ./backend
@@ -42,16 +69,21 @@ services:
     depends_on:
       mongo:
         condition: service_healthy
+      ml_service:
+        condition: service_healthy
     environment:
       NODE_ENV: ${NODE_ENV:-development}
       PORT: 5000
       MONGO_URI: mongodb://${MONGO_ROOT_USER:-admin}:${MONGO_ROOT_PASS:-secret}@mongo:27017/ajio_clone?authSource=admin
-      JWT_SECRET: ${JWT_SECRET:-change_me_in_production_super_secret_key}
+      JWT_SECRET: ${JWT_SECRET:-change_me_in_production}
       JWT_EXPIRE: ${JWT_EXPIRE:-30d}
       FRONTEND_URL: ${FRONTEND_URL:-http://localhost}
       CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME:-}
       CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY:-}
       CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET:-}
+      # ── NEW: ML service connection ────────────────────────────────────────────
+      ML_SERVICE_URL: http://ml_service:8000
+      ML_API_KEY: ${ML_API_KEY:-internal_ml_secret}
     ports:
       - "5000:5000"
     volumes:
@@ -59,13 +91,14 @@ services:
     networks:
       - ajio_net
     healthcheck:
-      test: ["CMD", "node", "-e", "require('http').get('http://localhost:5000/api/health', r => process.exit(r.statusCode === 200 ? 0 : 1))"]
+      test: ["CMD", "node", "-e",
+             "require('http').get('http://localhost:5000/api/health', r => process.exit(r.statusCode===200?0:1))"]
       interval: 15s
       timeout: 5s
       retries: 3
       start_period: 15s
 
-  # ── Frontend (React + Nginx) ─────────────────────────────────────────────────
+  # ── Frontend (unchanged) ──────────────────────────────────────────────────────
   frontend:
     build:
       context: ./frontend
@@ -90,4 +123,6 @@ networks:
 # ── Volumes ───────────────────────────────────────────────────────────────────
 volumes:
   mongo_data:
+    driver: local
+  ml_models:           # NEW: persists the trained recommender.pkl
     driver: local
