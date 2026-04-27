@@ -34,7 +34,7 @@ if [ "$OS" = "ubuntu" ]; then
 
 elif [ "$OS" = "amzn" ]; then
   sudo yum update -y
-  sudo yum install -y docker git curl
+  sudo yum install -y docker git 
   sudo systemctl enable docker
   sudo systemctl start docker
   sudo usermod -aG docker $USER
