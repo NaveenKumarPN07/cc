@@ -240,9 +240,11 @@ docker compose down
 ```bash
 # Step 1: SSH into your EC2 instance
 ssh -i your-key.pem ec2-user@YOUR_EC2_PUBLIC_IP
+"C:\Users\NAVEEN KUMAR P N\Downloads\ajio.pem"
 
 # Step 2: Download and run the deploy script
 curl -O https://raw.githubusercontent.com/yourusername/ajio-clone/main/deploy-aws.sh
+https://github.com/NaveenKumarPN07/cc/blob/main/deploy-aws.sh
 chmod +x deploy-aws.sh
 DOMAIN=YOUR_EC2_IP_OR_DOMAIN ./deploy-aws.sh
 
