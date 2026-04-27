@@ -90,21 +90,30 @@ export default function AdminProductForm() {
 
   if (isEdit && loadingProduct) return <div className="flex justify-center py-20"><Spinner size={32} /></div>;
 
-  const Field = ({ label, name, type = 'text', placeholder, textarea, half, required }) => (
-    <div className={half ? '' : 'md:col-span-2'}>
-      <label className="label">{label}{required && ' *'}</label>
-      {textarea ? (
-        <textarea
-          value={form[name]} onChange={set(name)}
-          placeholder={placeholder} rows={4}
-          className="input resize-none" required={required}
-        />
-      ) : (
-        <input type={type} value={form[name]} onChange={set(name)}
-          placeholder={placeholder} className="input" required={required} />
-      )}
-    </div>
-  );
+const Field = ({ label, name, type = 'text', placeholder, textarea, half, required, form, set }) => (
+  <div className={half ? '' : 'md:col-span-2'}>
+    <label className="label">{label}{required && ' *'}</label>
+    {textarea ? (
+      <textarea
+        value={form[name]}
+        onChange={set(name)}
+        placeholder={placeholder}
+        rows={4}
+        className="input resize-none"
+        required={required}
+      />
+    ) : (
+      <input
+        type={type}
+        value={form[name]}
+        onChange={set(name)}
+        placeholder={placeholder}
+        className="input"
+        required={required}
+      />
+    )}
+  </div>
+);
 
   return (
     <div className="max-w-3xl animate-fade-in">
@@ -122,7 +131,7 @@ export default function AdminProductForm() {
         <div className="card p-6">
           <h2 className="font-semibold mb-4">Basic Information</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Field label="Product Name" name="name" placeholder="e.g. Slim Fit Casual Shirt" required />
+            <Field label="Product Name" name="name" form={form} set={set} required />
             <Field label="Description" name="description" placeholder="Detailed product description..." textarea required />
             <div>
               <label className="label">Category *</label>
