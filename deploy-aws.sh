@@ -56,7 +56,7 @@ if [ -d "$APP_NAME" ]; then
   echo "Directory exists — pulling latest changes..."
   cd $APP_NAME && git pull origin main && cd ..
 else
-  git clone https://github.com/$DOCKER_HUB_USER/$APP_NAME.git
+  git clone https://github.com/NaveenKumarPN07/cc.git
 fi
 
 cd $APP_NAME
