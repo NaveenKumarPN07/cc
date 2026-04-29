@@ -14,7 +14,7 @@ import {
   triggerRetraining,
   getModelStatus,
 } from '../controllers/recommendController.js';
-import { protect, authorize } from '../../backend/middleware/authMiddleware.js';
+import { protect, authorize } from '../backend/middleware/authMiddleware.js';
 
 const router = express.Router();
 
