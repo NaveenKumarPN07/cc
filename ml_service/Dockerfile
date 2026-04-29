@@ -1,7 +1,7 @@
 # ── ML Service Dockerfile ─────────────────────────────────────────────────────
 # Python 3.11 slim — keeps image small (~400MB with scientific packages)
 
-FROM python:3.11-slim
+FROM python:3.10-slim
 
 WORKDIR /app
 
